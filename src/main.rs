@@ -21,27 +21,28 @@
  */
 
 
-use bliss_audio::Song;
+use bliss_audio::decoder::ffmpeg::FFmpeg as Decoder;
+use bliss_audio::decoder::Decoder as DecoderTrait;
 use std::env;
 
 fn main() {
     let args: Vec<String> = env::args().skip(1).collect();
     for path in &args {
-        match Song::new(&path) {
+        match Decoder::song_from_path(path) {
             Ok(song) => {
                 let vals: Vec<f32> = song.analysis.as_vec();
                 if args.len()>1 {
-                    print!("{}: ", path);
+                    print!("{}: \n", path);
                 }
                 for v in &vals {
-                    print!("{:.18} ", v);
+                    print!("{:.18}\n", v);
                 }
             },
             Err(e) => {
                 if args.len()>1 {
                     println!("{}: {}", path, e);
                 } else {
-                    println!("{}", e);
+                    println!("{}\n", e);
                 }
             }
         }
